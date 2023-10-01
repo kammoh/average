@@ -37,8 +37,6 @@ jobs:
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           override: true
-      - name: Install cargo-msrv
-        run: cargo install cargo-msrv
       - name: Install dependencies (if necessary)
         run: ${{ matrix.deps }}
       - name: Minimal versions (if necessary)
@@ -57,8 +55,6 @@ jobs:
           cargo test --target ${{ matrix.target }} --tests --no-default-features
           # all stable features:
           cargo test --target ${{ matrix.target }} --features=std,serde1,rayon
-      - name: Verify MSRV
-        run: cargo msrv verify
   test-no-std:
     runs-on: ubuntu-latest
     strategy:
@@ -78,3 +74,18 @@ jobs:
           cargo build --target=thumbv6m-none-eabi
           cargo build --target=thumbv6m-none-eabi --features serde1
           cargo build --target=thumbv6m-none-eabi --no-default-features --features serde1
+  verify-msrv:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+            profile: minimal
+            toolchain: stable
+      - name: Install cargo-msrv
+        run: cargo install cargo-msrv
+      - name: Verify MSRV
+        run: cargo msrv verify
