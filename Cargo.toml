@@ -10,7 +10,7 @@ readme = "README.md"
 repository = "https://github.com/vks/average"
 version = "0.14.1"
 edition = "2021"
-rust-version = "1.65"
+rust-version = "1.68"
 include = ["src/**/*", "benches/*", "LICENSE-*", "README.md"]
 resolver = "2"
 
