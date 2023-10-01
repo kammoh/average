@@ -19,7 +19,7 @@ jobs:
             toolchain: nightly
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            toolchain: 1.56.0  # MSRV
+            toolchain: 1.65.0  # MSRV
           - os: ubuntu-latest
             deps: sudo apt-get update ; sudo apt install gcc-multilib
             target: i686-unknown-linux-gnu
@@ -29,7 +29,7 @@ jobs:
             toolchain: nightly
             variant: minimal_versions
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -37,6 +37,8 @@ jobs:
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
           override: true
+      - name: Install cargo-msrv
+        run: cargo install cargo-msrv
       - name: Install dependencies (if necessary)
         run: ${{ matrix.deps }}
       - name: Minimal versions (if necessary)
@@ -55,12 +57,14 @@ jobs:
           cargo test --target ${{ matrix.target }} --tests --no-default-features
           # all stable features:
           cargo test --target ${{ matrix.target }} --features=std,serde1,rayon
+      - name: Verify MSRV
+          cargo msrv verify
   test-no-std:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
