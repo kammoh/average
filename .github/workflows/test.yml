@@ -58,7 +58,7 @@ jobs:
           # all stable features:
           cargo test --target ${{ matrix.target }} --features=std,serde1,rayon
       - name: Verify MSRV
-          cargo msrv verify
+        run: cargo msrv verify
   test-no-std:
     runs-on: ubuntu-latest
     strategy:
